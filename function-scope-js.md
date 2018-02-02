@@ -178,7 +178,7 @@ Las funciones `activeButton`, `desactiveButton`, `longitud`, `soloNumeros` y `is
       ...
 ```
 
-### **Function Expressions**
+#### **Function Expressions**
 
 Funciones que son almacenadas en variables y pueden ser invocadas por estas. El presente código solo contiene una función de este tipo, la cual es autoejecutable.
 
