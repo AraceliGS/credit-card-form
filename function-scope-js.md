@@ -6,7 +6,7 @@
 
 ## **Descripción**
 
-En el presente trabajo, se ha realizado un análisis del código en el archivo `app.js` identificando los tipos de variable según scope, tipos de funciones, closure, etc. para demostrar lo aprendio en este sprint.
+En el presente trabajo, se ha realizado un análisis del código en el archivo `app.js` identificando los tipos de variable según scope, tipos de funciones, closure, etc. para demostrar lo aprendido en este sprint.
 
 ## **Análisis**
 
@@ -16,7 +16,7 @@ En el presente trabajo, se ha realizado un análisis del código en el archivo `
 $(document).ready(function() {
 
   console.log('Probar con el numero valido 4544164785372342');
-  
+
   // Declaramos las variables que vamos a utilizar
   var $inputCard = $('#card-number');
   var $inputMonth = $('.input-month');
@@ -55,7 +55,7 @@ $(document).ready(function() {
     }
   }
 
-  // Funcion que valida que sea una un numero de tarjeta valido   
+  // Funcion que valida que sea una un numero de tarjeta valido
   function isValidCreditCard(numberCard) {
     var creditCardNumber = soloNumeros(longitud(numberCard));
     if (creditCardNumber !== undefined) {
@@ -83,7 +83,7 @@ $(document).ready(function() {
         desactiveButton();
       }
     } else {
-      console.log('Verifique el numero de su tarjeta'); 
+      console.log('Verifique el numero de su tarjeta');
       desactiveButton();
     }
   }
@@ -185,7 +185,11 @@ Las funciones `activeButton`, `desactiveButton`, `longitud`, `soloNumeros` y `is
 
 ### **Function Expressions**
 
-Funciones que son almacenadas en variables y pueden ser invocadas por estas. El presente código no contiene funciones de este tipo.
+Funciones que son almacenadas en variables y pueden ser invocadas por estas. El presente código solo contiene una función de este tipo, la cual es autoejecutable.
+
+```bash
+var creditCardNumber = soloNumeros(longitud(numberCard));
+```
 
 ### **Según si tienen nombre**
 
@@ -253,5 +257,83 @@ $inputCard.on('input', function() {
   });
 ```
 
+### **Otro tipo de funciones**
+
+#### **Funciones Autoejecutables**
+
+Se pueden ejecutar a sí mismas:
+
+```bash
+console.log('Probar con el numero valido 4544164785372342');
+```
+
+#### **Funciones Callback**
+
+Funciones que pasan a otras funcions como argumentos. En este trabajo, la funcion llamada `longitud` pasa como argumento para la función `soloNumeros`:
+
+```bash
+soloNumeros(longitud(numberCard));
+```
+
 ### **Según el scope**
+
+La función del evento ready es `global`, porque no está contenida dentro de otra función:
+
+```bash
+$(document).ready(function() {
+  ...
+}
+```
+
+Las demás funciones son consideradas `locales`, ya que están almacenadas dentro de la función del evento ready:
+
+```bash
+// Identificar el evento que nos permite capturar el input del usuario
+  $inputCard.on('input', function() {
+    isValidCreditCard($(this).val().trim());
+  });
+
+// Funciones que habilita el boton del formulario
+  function activeButton() {
+    $buttonNext.attr('disabled', false);
+  }
+
+  // Funcion que desabilita el boton del formulario
+  function desactiveButton() {
+    $buttonNext.attr('disabled', true);
+  }
+
+  // Funcion que valida la longitud del input ingresado por el usuario
+  function longitud(input) {
+    if (input.trim().length === 16) {
+      return input;
+    }
+  }
+
+  // Funcion que valida la longitud del input ingresado por el usuario
+  function soloNumeros(input) {
+    var regex = /^[0-9]+$/;
+    if (regex.test(input)) {
+      return input;
+    }
+  }
+
+  // Funcion que valida que sea una un numero de tarjeta valido
+  function isValidCreditCard(numberCard) {
+    var creditCardNumber = soloNumeros(longitud(numberCard));
+    if (creditCardNumber !== undefined) {
+      var arr = [];
+      var sumaTotal = 0;
+      for (var index = creditCardNumber.length - 1; index >= 0; index--) {
+        arr.push(creditCardNumber[index]);
+      }
+      for (var index = 1; index < arr.length; index = index + 2) {
+        arr[index] = arr[index] * 2;
+        if (arr[index] >= 10) {
+          arr[index] = arr[index] - 9;
+        }
+      }
+      ...
+```
+
 
