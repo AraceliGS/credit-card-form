@@ -140,24 +140,20 @@ function isValidCreditCard(numberCard) {
 Las funciones `activeButton`, `desactiveButton`, `longitud`, `soloNumeros` y `isValidCreditCard` son funciones statements porque son totalmente disponibles desde cualquier parte del código. No están almacenadas en variables(`function expressions`).
 
 ```bash
-// Funciones que habilita el boton del formulario
   function activeButton() {
     $buttonNext.attr('disabled', false);
   }
 
-// Funcion que desabilita el boton del formulario
   function desactiveButton() {
     $buttonNext.attr('disabled', true);
   }
 
-  // Funcion que valida la longitud del input ingresado por el usuario
   function longitud(input) {
     if (input.trim().length === 16) {
       return input;
     }
   }
 
-  // Funcion que valida la longitud del input ingresado por el usuario
   function soloNumeros(input) {
     var regex = /^[0-9]+$/;
     if (regex.test(input)) {
@@ -165,7 +161,6 @@ Las funciones `activeButton`, `desactiveButton`, `longitud`, `soloNumeros` y `is
     }
   }
 
-  // Funcion que valida que sea una un numero de tarjeta valido
   function isValidCreditCard(numberCard) {
     var creditCardNumber = soloNumeros(longitud(numberCard));
     if (creditCardNumber !== undefined) {
@@ -198,24 +193,20 @@ var creditCardNumber = soloNumeros(longitud(numberCard));
 Poseen nombre: `activeButton`, `desactiveButton`, `longitud`, `soloNumeros` y `isValidCreditCard`.
 
 ```bash
-// Funciones que habilita el boton del formulario
   function activeButton() {
     $buttonNext.attr('disabled', false);
   }
 
-  // Funcion que desabilita el boton del formulario
   function desactiveButton() {
     $buttonNext.attr('disabled', true);
   }
 
-  // Funcion que valida la longitud del input ingresado por el usuario
   function longitud(input) {
     if (input.trim().length === 16) {
       return input;
     }
   }
 
-  // Funcion que valida la longitud del input ingresado por el usuario
   function soloNumeros(input) {
     var regex = /^[0-9]+$/;
     if (regex.test(input)) {
@@ -223,7 +214,6 @@ Poseen nombre: `activeButton`, `desactiveButton`, `longitud`, `soloNumeros` y `i
     }
   }
 
-  // Funcion que valida que sea una un numero de tarjeta valido
   function isValidCreditCard(numberCard) {
     var creditCardNumber = soloNumeros(longitud(numberCard));
     if (creditCardNumber !== undefined) {
@@ -288,29 +278,25 @@ $(document).ready(function() {
 Las demás funciones son consideradas `locales`, ya que están almacenadas dentro de la función del evento ready:
 
 ```bash
-// Identificar el evento que nos permite capturar el input del usuario
   $inputCard.on('input', function() {
     isValidCreditCard($(this).val().trim());
   });
 
-// Funciones que habilita el boton del formulario
+
   function activeButton() {
     $buttonNext.attr('disabled', false);
   }
 
-  // Funcion que desabilita el boton del formulario
   function desactiveButton() {
     $buttonNext.attr('disabled', true);
   }
 
-  // Funcion que valida la longitud del input ingresado por el usuario
   function longitud(input) {
     if (input.trim().length === 16) {
       return input;
     }
   }
 
-  // Funcion que valida la longitud del input ingresado por el usuario
   function soloNumeros(input) {
     var regex = /^[0-9]+$/;
     if (regex.test(input)) {
@@ -336,4 +322,136 @@ Las demás funciones son consideradas `locales`, ya que están almacenadas dentr
       ...
 ```
 
+### **Contexto de Ejecución**
 
+#### **Stack Execution**
+
+Son funciones que forman parte de la pila de ejecución:
+
+```bash
+  function activeButton() {
+    $buttonNext.attr('disabled', false);
+  }
+```
+
+```bash
+  function desactiveButton() {
+    $buttonNext.attr('disabled', true);
+  }
+```
+
+``` bash
+  function longitud(input) {
+    if (input.trim().length === 16) {
+      return input;
+    }
+  }
+```
+
+```bash
+  function soloNumeros(input) {
+    var regex = /^[0-9]+$/;
+    if (regex.test(input)) {
+      return input;
+    }
+  }
+```
+
+```bash
+  function isValidCreditCard(numberCard) {
+    var creditCardNumber = soloNumeros(longitud(numberCard));
+    if (creditCardNumber !== undefined) {
+      var arr = [];
+      var sumaTotal = 0;
+      for (var index = creditCardNumber.length - 1; index >= 0; index--) {
+        arr.push(creditCardNumber[index]);
+      }
+      for (var index = 1; index < arr.length; index = index + 2) {
+        arr[index] = arr[index] * 2;
+        if (arr[index] >= 10) {
+          arr[index] = arr[index] - 9;
+        }
+      }
+
+      for (var index = 0; index < arr.length; index++) {
+        sumaTotal = sumaTotal + parseInt(arr[index]);
+      }
+
+      if (sumaTotal % 10 === 0) {
+        console.log('Es una tarjeta valida');
+        activeButton();
+      } else {
+        console.log('No es un numero valido');
+        desactiveButton();
+      }
+    } else {
+      console.log('Verifique el numero de su tarjeta');
+      desactiveButton();
+    }
+  }
+```
+
+La base de esta pila es el `Contexto de Ejecución Global`.
+
+#### **Event Queue**
+
+Son funciones que forman parte de la cola de eventos:
+
+```bash
+$(document).ready(function() {
+  ...
+}
+```
+
+```bash
+$inputCard.on('input', function() {
+    isValidCreditCard($(this).val().trim());
+});
+```
+
+### **Closure**
+
+Es la capacidad que tienen las funciones de recordar el entorno en el que se han creado.
+
+En los primeros dos casos, las funciones `activeButton` y `desactiveButton` no tiene ninguna variable propia, por lo que reutilizan las variables declaradas en la función del evento ready.
+
+```bash
+$(document).ready(function() {
+  var $buttonNext = $('#next');
+  function activeButton() {
+    $buttonNext.attr('disabled', false);
+  }
+});
+```
+
+```bash
+$(document).ready(function() {
+  var $buttonNext = $('#next');
+  function desactiveButton() {
+    $buttonNext.attr('disabled', true);
+  }
+});
+```
+
+En último caso, la function expressions `creditCardNumber` al no tener dentro del scope de la función `isValidCreditCard` las funciones `soloNumeros` y `longitud`, sale a obtenerlas fuera de `isValidCreditCard`.
+
+```bash
+$(document).ready(function() {
+  function longitud(input) {
+    if (input.trim().length === 16) {
+      return input;
+    }
+  }
+
+  function soloNumeros(input) {
+    var regex = /^[0-9]+$/;
+    if (regex.test(input)) {
+      return input;
+    }
+  }
+
+  function isValidCreditCard(numberCard) {
+    var creditCardNumber = soloNumeros(longitud(numberCard));
+      ...
+});
+```
